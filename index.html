@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;,">
+    <title>Emoji Word Combination Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0062B8 0%, #00A3E0 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sdg-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            width: 100%;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .life-counter {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .heart {
+            color: #FF6B6B;
+            font-size: 2rem;
+        }
+        
+        .emoji-combination {
+            font-size: 5rem;
+            margin: 30px 0;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            min-height: 150px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .emoji-separator {
+            font-size: 3rem;
+            color: #FFD700;
+        }
+        
+        .input-section {
+            margin: 20px 0;
+        }
+        
+        input {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px 20px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            text-align: center;
+            margin-bottom: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            color: #0062B8;
+        }
+        
+        button {
+            background: white;
+            color: #0062B8;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #E0F4FF;
+            transform: translateY(-3px);
+        }
+        
+        .result {
+            margin: 20px 0;
+            font-size: 1.5rem;
+            min-height: 40px;
+            font-weight: bold;
+        }
+        
+        .correct {
+            color: #7CFC00;
+        }
+        
+        .incorrect {
+            color: #FF6B6B;
+        }
+        
+        .score {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        
+        .progress-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            gap: 20px;
+        }
+        
+        .circular-progress {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .circular-progress::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0062B8 0%, #00A3E0 100%);
+        }
+        
+        .progress-value {
+            position: relative;
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .rank-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 10px;
+            min-width: 150px;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .game-over {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 40px;
+            border-radius: 20px;
+            margin-top: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-over h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #FF6B6B;
+        }
+        
+        .game-over p {
+            font-size: 1.3rem;
+            margin: 10px 0;
+        }
+        
+        .game-over button {
+            margin-top: 20px;
+            font-size: 1.3rem;
+            padding: 15px 40px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .emoji-combination {
+                font-size: 3.5rem;
+            }
+            
+            .game-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .progress-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .circular-progress {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .circular-progress::before {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .progress-value {
+                font-size: 1.5rem;
+            }
+            
+            .game-over {
+                padding: 20px;
+            }
+            
+            .game-over h2 {
+                font-size: 2rem;
+            }
+            
+            .game-over p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sdg-header">
+        <h2>We're so glad you're here - SDG hopes you're having a wonderful time!</h2>
+    </div>
+    
+    <div class="container" id="game-container">
+        <h1>Emoji Word Combination Game</h1>
+        <p class="subtitle">Combine emojis to form a single word - One wrong answer and it's game over!</p>
+        
+        <div class="life-counter">
+            <span>Lives:</span>
+            <span class="heart" id="heart">❤️</span>
+        </div>
+        
+        <div class="score">
+            <div>Score: <span id="score">0</span></div>
+            <div>Correct: <span id="correct">0</span>/<span id="total">15</span></div>
+        </div>
+        
+        <div class="progress-container">
+            <div class="circular-progress">
+                <span class="progress-value" id="progress-value">1</span>
+            </div>
+            <div class="rank-display" id="rank-display">Beginner</div>
+        </div>
+        
+        <div class="emoji-combination" id="emoji-combination">
+            <span id="emoji1">4️⃣</span>
+            <span class="emoji-separator">+</span>
+            <span id="emoji2">🐝</span>
+            <span class="emoji-separator">=</span>
+            <span id="emoji-question">❓</span>
+        </div>
+        
+        <div class="input-section">
+            <input type="text" id="guess-input" placeholder="What word do these emojis represent?">
+            <button id="submit-btn">Check Answer</button>
+            <button id="next-btn" style="display:none;">Next Word</button>
+        </div>
+        
+        <div class="result" id="result"></div>
+        
+        <div class="game-info">
+            <div>Word: <span id="word-number">1</span> of 15</div>
+        </div>
+    </div>
+    
+    <div class="game-over" id="game-over">
+        <h2>Game Over!</h2>
+        <p>You correctly guessed <span id="final-correct">0</span> words.</p>
+        <p>Your final score: <span id="final-score">0</span></p>
+        <p>Your rank: <span id="final-rank">Beginner</span></p>
+        <button id="restart-btn">Play Again</button>
+    </div>
+
+    <script>
+        const wordCombinations = [
+            { emoji1: "🌞", emoji2: "🌼", answer: "sunflower" },
+            { emoji1: "🔑", emoji2: "🛹", answer: "keyboard" },
+            { emoji1: "🐄", emoji2: "👦", answer: "cowboy" },
+            { emoji1: "⭐", emoji2: "🛹", answer: "starboard" },
+            { emoji1: "🏠", emoji2: "👩", answer: "housewife" },
+            { emoji1: "👖", emoji2: "🏠", answer: "penthouse" },
+            { emoji1: "🙂", emoji2: "📚", answer: "facebook" },
+            { emoji1: "👁️", emoji2: "📱", answer: "iphone" },
+            { emoji1: "🌙", emoji2: "💡", answer: "moonlight" },
+            { emoji1: "🧺", emoji2: "⚽", answer: "basketball" },
+            { emoji1: "🧈", emoji2: "🦟", answer: "butterfly" },
+            { emoji1: "🐝", emoji2: "4️⃣", answer: "before" }, 
+            { emoji1: "❄️", emoji2: "👨", answer: "snowman" },
+            { emoji1: "🦇", emoji2: "🌳", answer: "battery" },
+            { emoji1: "🕸️", emoji2: "🌐", answer: "website" }
+
+        ];
+
+        const emoji1 = document.getElementById('emoji1');
+        const emoji2 = document.getElementById('emoji2');
+        const emojiQuestion = document.getElementById('emoji-question');
+        const guessInput = document.getElementById('guess-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const resultDisplay = document.getElementById('result');
+        const scoreDisplay = document.getElementById('score');
+        const correctDisplay = document.getElementById('correct');
+        const totalDisplay = document.getElementById('total');
+        const wordNumberDisplay = document.getElementById('word-number');
+        const progressValue = document.getElementById('progress-value');
+        const rankDisplay = document.getElementById('rank-display');
+        const heart = document.getElementById('heart');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const finalCorrectDisplay = document.getElementById('final-correct');
+        const finalRankDisplay = document.getElementById('final-rank');
+        const restartBtn = document.getElementById('restart-btn');
+        const gameContainer = document.getElementById('game-container');
+        const sdgHeader = document.querySelector('.sdg-header');
+
+        let currentWordIndex = 0;
+        let score = 0;
+        let correctAnswers = 0;
+        let lives = 1;
+
+        const ranks = [
+            { minScore: 0, name: "Beginner" },
+            { minScore: 30, name: "Good" },
+            { minScore: 60, name: "Great" },
+            { minScore: 90, name: "Excellent" },
+            { minScore: 120, name: "Master" }
+        ];
+
+        function initGame() {
+            currentWordIndex = 0;
+            score = 0;
+            correctAnswers = 0;
+            lives = 1;
+            
+            totalDisplay.textContent = wordCombinations.length;
+            gameOverScreen.style.display = 'none';
+            gameContainer.style.display = 'block';
+            sdgHeader.style.display = 'flex';
+            heart.textContent = '❤️';
+            
+            displayWord();
+            updateScore();
+            updateProgress();
+            updateRank();
+        }
+
+        function displayWord() {
+            const currentWord = wordCombinations[currentWordIndex];
+            emoji1.textContent = currentWord.emoji1;
+            emoji2.textContent = currentWord.emoji2;
+            emojiQuestion.textContent = "❓";
+            guessInput.value = '';
+            resultDisplay.textContent = '';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'inline-block';
+            guessInput.disabled = false;
+            submitBtn.disabled = false;
+            guessInput.focus();
+            wordNumberDisplay.textContent = currentWordIndex + 1;
+        }
+
+        function checkGuess() {
+            const userGuess = guessInput.value.trim().toLowerCase();
+            const correctAnswer = wordCombinations[currentWordIndex].answer.toLowerCase();
+            
+            if (userGuess === correctAnswer) {
+                resultDisplay.textContent = '🎉 Excellent! Correct answer!';
+                resultDisplay.className = 'result correct';
+                emojiQuestion.textContent = "✅";
+                
+                score += 10;
+                correctAnswers++;
+                updateScore();
+                
+                guessInput.disabled = true;
+                submitBtn.disabled = true;
+                submitBtn.style.display = 'none';
+                nextBtn.style.display = 'inline-block';
+                
+                updateProgress();
+                updateRank();
+                
+                if (correctAnswers === wordCombinations.length) {
+                    setTimeout(() => {
+                        showGameOver(true);
+                    }, 1000);
+                }
+            } else {
+                resultDisplay.textContent = `❌ Wrong! The correct answer was: ${correctAnswer}`;
+                resultDisplay.className = 'result incorrect';
+                heart.textContent = '💔';
+                
+                setTimeout(() => {
+                    showGameOver(false);
+                }, 1500);
+            }
+        }
+
+        function nextWord() {
+            if (currentWordIndex < wordCombinations.length - 1) {
+                currentWordIndex++;
+                displayWord();
+            } else {
+                showGameOver(true);
+            }
+        }
+
+        function showGameOver(isVictory) {
+            gameContainer.style.display = 'none';
+            sdgHeader.style.display = 'none';
+            
+            gameOverScreen.style.display = 'flex';
+            finalScoreDisplay.textContent = score;
+            finalCorrectDisplay.textContent = correctAnswers;
+            finalRankDisplay.textContent = getRank(score).name;
+            
+            if (isVictory) {
+                gameOverScreen.innerHTML = `
+                    <h2>🎊 Congratulations! You Won! 🎊</h2>
+                    <p>You correctly guessed all ${wordCombinations.length} words!</p>
+                    <p>Your final score: <span id="final-score">${score}</span></p>
+                    <p>Your rank: <span id="final-rank">${getRank(score).name}</span></p>
+                    <button id="restart-btn">Play Again</button>
+                `;
+            } else {
+                gameOverScreen.innerHTML = `
+                    <h2>Game Over!</h2>
+                    <p>You correctly guessed <span id="final-correct">${correctAnswers}</span> words.</p>
+                    <p>Your final score: <span id="final-score">${score}</span></p>
+                    <p>Your rank: <span id="final-rank">${getRank(score).name}</span></p>
+                    <button id="restart-btn">Play Again</button>
+                `;
+            }
+            
+            document.getElementById('restart-btn').addEventListener('click', initGame);
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = score;
+            correctDisplay.textContent = correctAnswers;
+        }
+
+        function updateProgress() {
+            progressValue.textContent = currentWordIndex + 1;
+        }
+
+        function updateRank() {
+            const rank = getRank(score);
+            rankDisplay.textContent = rank.name;
+        }
+
+        function getRank(score) {
+            for (let i = ranks.length - 1; i >= 0; i--) {
+                if (score >= ranks[i].minScore) {
+                    return ranks[i];
+                }
+            }
+            return ranks[0];
+        }
+
+        submitBtn.addEventListener('click', checkGuess);
+        nextBtn.addEventListener('click', nextWord);
+        restartBtn.addEventListener('click', initGame);
+
+        guessInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkGuess();
+            }
+        });
+
+        initGame();
+    </script>
+</body>
+</html>
